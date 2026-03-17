@@ -1,0 +1,35 @@
+<div class="container">
+  <h2>Finance Manager Dashboard</h2>
+
+  @if (tasks().length > 0) {
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Amount</th>
+          <th>Creation Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (task of tasks(); track task.userTaskKey) {
+          <tr>
+            <td>{{ task.orderId }}</td>
+            <td>{{ task.amount | currency }}</td>
+            <td>{{ task.creationDate | date:'short' }}</td>
+            <td>
+              <div class="button-group">
+                <button class="btn-approve" (click)="onAction(task.userTaskKey, true)">Approve Credit</button>
+                <button class="btn-reject" (click)="onAction(task.userTaskKey, false)">Reject Credit</button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <div class="empty-state">
+      <p>No pending manual reviews. All clear!</p>
+    </div>
+  }
+</div>

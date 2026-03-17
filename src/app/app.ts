@@ -1,8 +1,10 @@
 import { Component, signal } from '@angular/core';
+import { TaskManagerComponent } from './components/task-manager/task-manager.component';
 
 @Component({
   selector: 'app-root',
-  imports: [],
+  standalone: true,
+  imports: [TaskManagerComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
