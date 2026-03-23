@@ -24,10 +24,24 @@ export class TaskManagerComponent implements OnInit {
 
   // Handle "Approve Credit" (true) and "Reject Credit" (false)
   onAction(taskId: string, decision: boolean) {
-    this.taskService.completeTask(taskId, decision).subscribe(() => {
-      setTimeout(() => {
-        window.location.reload();
-        }, 1500);
+    // 1. Optimistic UI update: Remove task from local list immediately
+    this.tasks.update(currentTasks => currentTasks.filter(t => t.id !== taskId));
+
+    // 2. Call the service to complete the task in the cloud
+    this.taskService.completeTask(taskId, decision).subscribe({
+      next: () => {
+        // 3. Instead of reload, wait for the cloud indexer to sync
+        // then refresh the data in the background
+        setTimeout(() => {
+          this.refreshTasks();
+        }, 2000); // 2 seconds is safer for SaaS
+      },
+      error: (err) => {
+        // 4. Rollback: If the server call fails, put the task back or alert the user
+        console.error('Task completion failed:', err);
+        alert('Action failed. Refreshing list...');
+        this.refreshTasks();
+      }
     });
   }
 }

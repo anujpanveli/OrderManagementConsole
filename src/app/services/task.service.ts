@@ -7,7 +7,6 @@ import { map, switchMap } from 'rxjs/operators';
 export class TaskService {
   private http = inject(HttpClient);
   private baseUrl = '/v2';
-  private headers = new HttpHeaders({});
 
   // Step 1: Fetch tasks
   // Step 2: For each task, fetch its process variables
@@ -15,8 +14,7 @@ export class TaskService {
   getTasksWithVariables(): Observable<any[]> {
     return this.http.post<{ items: any[] }>(
       `${this.baseUrl}/user-tasks/search`,
-      { filter: { elementId: 'manager_review_task', state: 'CREATED' } },
-      { headers: this.headers }
+      { filter: { elementId: 'manager_review_task', state: 'CREATED' } }
     ).pipe(
       map(res => res.items ?? []),
       switchMap(tasks => {
@@ -26,8 +24,7 @@ export class TaskService {
         const variableRequests = tasks.map(task =>
           this.http.post<{ items: any[] }>(
             `${this.baseUrl}/variables/search`,
-            { filter: { processInstanceKey: task.processInstanceKey } },
-            { headers: this.headers }
+            { filter: { processInstanceKey: task.processInstanceKey } }
           ).pipe(
             map(res => {
               // Convert variable array into a key-value map
@@ -50,11 +47,12 @@ export class TaskService {
     );
   }
 
-  completeTask(taskId: string, approved: boolean): Observable<any> {
+  completeTask(taskId: string, approved: boolean) {
     return this.http.post(
       `${this.baseUrl}/user-tasks/${taskId}/completion`,
-      { variables: { approved } },
-      { headers: this.headers }
+      { variables: { approved },
+        action: "complete"
+      }
     );
   }
 }

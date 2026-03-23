@@ -1,11 +1,16 @@
 {
   "/v2": {
-    "target": "http://localhost:8080",
-    "secure": false,
+    "target": "https://lhr-1.zeebe.camunda.io/e98bf2a9-fc95-469a-873a-fd23b4a11cd9",
+    "secure": true,
     "changeOrigin": true,
-    "logLevel": "debug",
-    "headers": {
-      "Cookie": ""
+    "logLevel": "debug"
+  },
+  "/auth": {
+    "target": "https://login.cloud.camunda.io",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/auth": ""
     }
   }
 }
